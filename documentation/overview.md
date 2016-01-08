@@ -5,6 +5,8 @@ The goal of this project is to capture the estimated $ET$ for the SSJ region usi
 
 <script type="math/tex; mode=display">T'(t) = \lambda T(t)</script><script type="math/tex; mode=display">X''(x) = \lambda \alpha X(x)</script>
 
+<iframe style="width: 100%; height: 600px" src="http://jsfiddle.net/RR8Ub/1/embedded/result,resources,js,html" seamless frameBorder="0">
+</iframe>
 
 <script src="http://d3js.org/d3.v3.min.js"></script>
 
