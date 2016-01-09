@@ -37,3 +37,24 @@ The goal of this project is to capture the estimated $ET$ for the SSJ region usi
                 .attr("fill",function(d) { return colorScale(d);})
                 .attr("y",function(d,i) { return i*60} );
   </script>
+
+{% chart %}
+{
+    // NOT need to specified `bindto` here
+    data: {
+        type: 'bar',
+        columns: [
+            ['data1', 30, 200, 100, 400, 150, 250],
+            ['data2', 50, 20, 10, 40, 15, 25]
+        ],
+        axes: {
+            data2: 'y2'
+        }
+    },
+    axis: {
+        y2: {
+            show: true
+        }
+    }
+}
+{% endchart %}
