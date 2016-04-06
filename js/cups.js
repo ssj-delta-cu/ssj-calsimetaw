@@ -134,75 +134,37 @@ var crop_def = function(number) {
 };
 
 var crop_schedule = function(number,plant,harvest) {
-  var A,B,C,D,E;
-  var year,diff,days;
+    var A,B,C,D,E;
+    var year,diff,days;
 
-  var crop = crop_def(number);
+    var crop = crop_def(number);
 
-  if (typeof plant === 'object' ) {
-    if (typeof harvest === 'object') {
-      A = plant;
-      E = harvest;
-      diff = E-A;
-    } else {
-      year=plant.getFullYear(); // First get length of default harvest
-      A = new Date(year,crop.plant[0]-1,crop.plant[1]);
-      E = new Date((crop.plant[0]<crop.harvest[0])?year:year+1,crop.harvest[0]-1,crop.harvest[1]);
-      var diff = E-A;
-      // Now get moved days
-      A = plant;
-      E = new Date(A.getTime()+diff);
+    if (typeof plant === 'object' ) { if (typeof harvest === 'object') {     A = plant;     E = harvest;     diff = E-A; } else {     year=plant.getFullYear(); // First get length of default harvest     A = new Date(year,crop.plant[0]-1,crop.plant[1]);     E = new Date((crop.plant[0]<crop.harvest[0])?year:year+1,crop.harvest[0]-1,crop.harvest[1]);     var diff = E-A;     // Now get moved days     A = plant;     E = new Date(A.getTime()+diff); }
+    } else { if (typeof plant === 'number') {     year=plant; } else {     year = new Date(Date.now()).getFullYear(); } A = new Date(year,crop.plant[0]-1,crop.plant[1]); E = new Date((crop.plant[0]<crop.harvest[0])?year:year+1,crop.harvest[0]-1,crop.harvest[1]); diff = E-A;
     }
-  } else {
-    if (typeof plant === 'number') {
-      year=plant;
-    } else {
-      year = new Date(Date.now()).getFullYear();
-    }
-    A = new Date(year,crop.plant[0]-1,crop.plant[1]);
-    E = new Date((crop.plant[0]<crop.harvest[0])?year:year+1,crop.harvest[0]-1,crop.harvest[1]);
-    diff = E-A;
-  }
-  var days = Math.round(diff/1000/60/60/24);
-  var B = new Date(A.getTime()+diff*crop.BCDp[0]/100);
-  var C = new Date(A.getTime()+diff*crop.BCDp[1]/100);
-  var D = new Date(A.getTime()+diff*crop.BCDp[2]/100);
-  return {
-    number:number,
-    name:crop.name,
-    BCDp:crop.BCDp,
-    Kc:crop.Kc,
-    A:A,
-    B:B,
-    C:C,
-    D:D,
-    E:E,
-    days:days
-  };
+    var days = Math.round(diff/1000/60/60/24);
+    var B = new Date(A.getTime()+diff*crop.BCDp[0]/100);
+    var C = new Date(A.getTime()+diff*crop.BCDp[1]/100);
+    var D = new Date(A.getTime()+diff*crop.BCDp[2]/100);
+    return { number:number, name:crop.name, BCDp:crop.BCDp, Kc:crop.Kc, A:A, B:B, C:C, D:D, E:E, days:days
+    };
 };
 
 var Kc = function(c,d) {
-  d = (typeof d !== 'undefined') ? d : new Date(Date.now());
-  if (typeof c !== 'object') {
-    c = crop_schedule(sched,d.getFullYear());
-  }
-  if (d < c.A) {
-    return undef;
-  } else if (d < c.B) {
-    return c.Kc[0];
-  } else if (d < c.C) {
-    return c.Kc[0] + (c.Kc[1]-c.Kc[0])*(d-c.B)/(c.C-c.B);
-  } else if (d < c.D) {
-    return c.Kc[1];
-  } else if (d < c.E) {
-    return c.Kc[1] + (c.Kc[2]-c.Kc[1])*(d-c.B)/(c.C-c.B);
-  } else {
-    return undef;
-  }
+    d = (typeof d !== 'undefined') ? d : new Date(Date.now());
+    if (typeof c !== 'object') { c = crop_schedule(sched,d.getFullYear());
+    }
+    if (d < c.A) { return undef;
+    } else if (d < c.B) { return c.Kc[0];
+    } else if (d < c.C) { return c.Kc[0] + (c.Kc[1]-c.Kc[0])*(d-c.B)/(c.C-c.B);
+    } else if (d < c.D) { return c.Kc[1];
+    } else if (d < c.E) { return c.Kc[1] + (c.Kc[2]-c.Kc[1])*(d-c.B)/(c.C-c.B);
+    } else { return undef;
+    }
 };
 
 module.exports = {
-  crop_def:crop_def,
-  crop_schedule:crop_schedule,
-  Kc:Kc
+    crop_def:crop_def,
+    crop_schedule:crop_schedule,
+    Kc:Kc
 }
