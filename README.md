@@ -22,16 +22,16 @@ NASA has provided the SSJ team with a vector data layer of landcover that includ
 
 Data | Daily | Monthly
 ---  | --- | ---
-ET   | [results/nasa/daily] | [results/nasa/monthly]
-Kc   | [results/nasa/daily] | [results/nasa/monthly]
+ET   | [results/nasa/wy2015/daily] | [results/nasa/wy2015/monthly]
+Kc   | [results/nasa/wy2015/daily] | [results/nasa/wy2015/monthly]
 
 To create the summarization tables, the vector maps were intersected with the [Island Regions].
 
 To create the required 30m raster map, the resultant outputs where rasterized and exported.
 
 [NASA Landcover]: https://github.com/ssj-delta-cu/ssj-nasa-landcover
-[results/nasa/daily]: ./results/nasa/daily
-[results/nasa/monthly]: ./results/nasa/monthly
+[results/nasa/wy2015/daily]: ./results/nasa/wy2015/daily
+[results/nasa/wy2015/monthly]: ./results/nasa/wy2015/monthly
 
 ### CDL Landcover Based
 
@@ -39,11 +39,11 @@ The USDA [Cropland Data Layer] is a 30m raster based crop data type.  Unlike the
 
 Data | Daily | Monthly
 ---  | --- | ---
-ET   | [results/cdl/daily] | [results/cdl/monthly]
-Kc   | [results/cdl/daily] | [results/cdl/monthly]
+ET   | [results/cdl/wy2015/daily] | [results/cdl/wy2015/monthly]
+Kc   | [results/cdl/wy2015/daily] | [results/cdl/wy2015/monthly]
 
-[results/cdl/daily]: ./results/cdl/daily
-[results/cdl/monthly]: ./results/cdl/monthly
+[results/cdl/wy2015/daily]: ./results/cdl/wy2015//daily
+[results/cdl/wy2015/monthly]: ./results/cdl/wy2015//monthly
 
 [Cropland Data Layer]: http://www.nass.usda.gov/Research_and_Science/Cropland/SARS1a.php
 
