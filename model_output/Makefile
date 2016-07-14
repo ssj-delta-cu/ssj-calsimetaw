@@ -6,7 +6,7 @@ INFO:
 	echo 'Make input for postgresql from CalSIMETAW outputs.'
 
 model_output.csv:
-	echo $header > $@ 
+	echo $(header) > $@ 
 	for i in DAUCo_*.csv; do \
 	  y=`basename "$$i" .csv | tr -d ' ' | cut -d- -f 2`; \
 	  c=`echo $$y | cut -d_ -f1`; \
