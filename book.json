@@ -1,8 +1,0 @@
-{
-    "pluginsConfig": {
-        "chart": {
-            "type": "highcharts"
-        }
-    },
-    "plugins": ["mathjax","chart"]
-}
