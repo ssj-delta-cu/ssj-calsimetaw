@@ -24,9 +24,11 @@ The process is:
 * Intersect Aggregated ET with Landuse type, to apply the appropriate commodity to each high resolution field/region.  The results has each field assigned it's average ET for each month
 * Export this as a 30m raster of 12 bands, each band representing the monthly average ET.  These can then be directly compared to the directly measured ET based methods.
 
-| Estimated Yearly ET |
-| --- |
-| ![Yearly ET][et] |
+| Estimated Yearly ET | August Raster ET 
+| --- | ---
+| ![Yearly ET][et] | ![August Raster][aug]
+
+[aug]:raster.png
 
 ## [Results](./results)
 
