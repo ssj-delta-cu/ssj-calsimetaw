@@ -1,0 +1,31 @@
+Level_2,DETAW_LU,abbrev,detaw_crop
+Alfalfa,Alfalfa,AL,3
+Corn,Field,FI,4
+Safflower,Field,FI,4
+Sunflower,Field,FI,4
+Forage Grass,Grain,GR,6
+Riparian,Native Riparian,NR,12
+Fallow,Native Vegetation,NV,13
+Semi-agricultural/ROW,Native Vegetation,NV,13
+Upland Herbaceous,Native Vegetation,NV,13
+Wet herbaceous/sub irrigated pasture,Native Vegetation,NV,13
+Almonds,Orchards,OR,10
+Cherries,Orchards,OR,10
+Citrus,Orchards,OR,10
+Olives,Orchards,OR,10
+Other Deciduous,Orchards,OR,10
+Pears,Orchards,OR,10
+Pistachios,Orchards,OR,10
+Walnuts,Orchards,OR,10
+Pasture,Pasture,PA,2
+Turf,Pasture,PA,2
+Rice,Rice,RI,7
+Tomatoes,Tomato,TO,9
+Bush Berries,Truck,TR,8
+Cucurbit,Truck,TR,8
+Potatoes,Truck,TR,8
+Truck Crops,Truck,TR,8
+Urban,Urban,UR,1
+Vineyards,Vineyards,VI,11
+Floating Vegetation,Water,WS,15
+Water,Water,WS,15
