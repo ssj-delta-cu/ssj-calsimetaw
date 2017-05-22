@@ -1,19 +1,30 @@
 -- These scripts provide the landuse informaiton for Cal-SIMETAW (that is by DAUCo)
 -- Needed to run the CalSIMETAW program.  We include both CDL and LandIQ landuse data.
 
+-- creates a geom colummn for the DAU table that was imported from the geojson and validates the geometry
+ALTER TABLE calsimetaw.dau ADD COLUMN geom geometry(Geometry, 3310);
+UPDATE calsimetaw.dau
+SET geom=ST_MakeValid (wkb_geometry);
+
+-- creates a geom colummn for the counties table imported from the geojson file and validates the geometry
+ALTER TABLE calsimetaw.counties ADD COLUMN geom geometry(Geometry, 3310);
+UPDATE calsimetaw.counties
+SET geom=ST_MakeValid (wkb_geometry);
+
+
 -- First we create the dauco map.  This should probably be added to the dua project since we use it so much.
 create table calsimetaw.dauco as select 
 replace(format('DAUCo%s%2sGA',dau_code,ansi::integer/2+1),' ','0') as label,
 replace(format('%s%2s',dau_code,ansi::integer/2+1),' ','0') as dauco,
 dau_code,ansi,st_intersection(d.geom,c.geom) as geom 
-from dau d join counties c on (st_intersects(d.geom,c.geom) and st_area(st_intersection(d.geom,c.geom))>1) 
+from calsimetaw.dau d join calsimetaw.counties c on (st_intersects(d.geom,c.geom) and st_area(st_intersection(d.geom,c.geom))>1) 
 where dau_code in ('185','186') order by 1,3;
 
 create materialized view calsimetaw.dau_landuse as 
 select 
 level_1,level_2,dauco,
 sum(st_area(st_intersection(d.geom,l.geom))) 
-from dauco d join landuse l on (st_intersects(d.geom,l.geom))
+from calsimetaw.dauco d join landuse l on (st_intersects(d.geom,l.geom))
 group by 1,2,3;
 
 
