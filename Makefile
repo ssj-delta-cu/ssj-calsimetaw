@@ -4,21 +4,24 @@ SHELL:=/bin/bash
 
 db:=ssj
 schema:=calsimetaw
-PG:=psql -d ${db}
-OGR:=ogr2ogr -f "PostgreSQL" PG:"dbname=${db} port=5433" -overwrite -a_srs epsg:4269 -t_srs epsg:3310
+service=ssj
+PG:=psql service=${service} -d ${db}
+OGR:=ogr2ogr -f "PostgreSQL" PG:"host='localhost' user='ssj' dbname='${db}' port='5432'" -overwrite -a_srs epsg:4269 -t_srs epsg:3310
+SSJFOLDER:=${HOME}/Documents/ssj-delta-cu
 
 .PHONY:import
 
-import: dau grid eto
+import: dau grid eto counties
 # This just rebuilds everytime
-dau: tar:=v2.0.0.tar.gz
-dau: url:=https://github.com/ucd-cws/dwr-dau/archive/v2.0.0.tar.gz
-dau: geojson:=dwr-dau-2.0.0/detailed_analysis_units.geojson
+dau: tar:=v2.1.0.tar.gz
+dau: url:=https://github.com/ucd-cws/dwr-dau/archive/v2.1.0.tar.gz
+dau: geojson:=dwr-dau-2.1.0/detailed_analysis_units.geojson
 dau:
 	[[ -f ${tar} ]] || wget ${url}
 	tar -xzf ${tar}
 	${OGR} -nln ${schema}.dau ${geojson}
 	date > $@
+	rm ${tar}
 
 grid: tar:=v1.0.0.tar.gz
 grid: url:=https://github.com/CSTARS/dwr-grid/archive/v1.0.0.tar.gz
@@ -30,26 +33,35 @@ grid:
 	shp2pgsql -d -S -I -g boundary -s 3310 ${cimis} ${schema}.cimis | ${PG} > /dev/null
 	shp2pgsql -d -S -I -g boundary -s 3310 ${calsimetaw} ${schema}.calsimetaw | ${PG} > /dev/null
 	date > $@
+	rm ${tar}
 
-eto:rast:=${HOME}/ssj-weather/cimis/2015.wy/ETo.tif
+counties: tar:=v1.0.0.tar.gz
+counties: url:=https://github.com/ucd-library/california-counties/archive/v1.0.0.tar.gz
+counties: geojson:=california-counties-1.0.0/geojson/california_counties.geojson
+counties:
+	[[ -f ${tar} ]] || wget ${url}
+	tar -xzf ${tar}
+	${OGR} -nln ${schema}.counties ${geojson}
+	date > $@
+	rm ${tar}
+
+eto:rast:=${SSJFOLDER}/ssj-weather/cimis/2015.wy/ETo.tif
 eto:
 	raster2pgsql -d ${rast} cimis.eto | ${PG} -f -
 	date > $@
 
-bbox: bbox:=/home/quinn/ssj-overview/ssj-delta-cu-bbox.geojson
+bbox: bbox:=${SSJFOLDER}/ssj-overview/ssj-delta-cu-bbox.geojson
 bbox:
 	${OGR} -nln overview.bbox ${bbox}
 	date > $@ 
 
-
 et_wy2015.tif:et_wy%.tif:
 	gdal_translate -of GTiff -co "COMPRESS=DEFLATE" \
-	  "PG:dbname='ssj' schema='calsimetaw' table='et_raster' mode='1' where='type=\\'et\\' and year=$*'" $@
+	  "PG:host='localhost' user='ssj' dbname='ssj' schema='calsimetaw' table='et_raster' mode='1' where='type=\\'et\\' and year=$*'" $@
 
 iet_wy2015.tif:iet_wy%.tif:
 	gdal_translate -of GTiff -co "COMPRESS=DEFLATE" \
-	  "PG:dbname='ssj' schema='calsimetaw' table='et_raster' mode='1' where='type=\'iet\' and year=$*'" $@
+	  "PG:host='localhost' user='ssj' dbname='ssj' schema='calsimetaw' table='et_raster' mode='1' where='type=\'iet\' and year=$*'" $@
 
 # Getting DWR values
 #for i in `psql service=ssj -A -t --pset=footer -c 'with a as (select dwr_id,boundary,wkb_geometry,(st_area(st_intersection(g.boundary,b.wkb_geometry)))::int as area from calsimetaw.calsimetaw g join overview.bbox b on st_intersects(g.boundary,b.wkb_geometry)) select dwr_id from a where area > 0 order by dwr_id' `; do rsync ../weather/cimis_$i.csv . -v ; done
-
