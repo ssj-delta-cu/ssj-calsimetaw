@@ -20,18 +20,18 @@ dau_code,ansi,st_intersection(d.geom,c.geom) as geom
 from calsimetaw.dau d join calsimetaw.counties c on (st_intersects(d.geom,c.geom) and st_area(st_intersection(d.geom,c.geom))>1) 
 where dau_code in ('185','186') order by 1,3;
 
-create materialized view calsimetaw.dau_landuse as 
+create materialized view calsimetaw.dau_landuse_wy2015 as 
 select 
 level_1,level_2,dauco,
 sum(st_area(st_intersection(d.geom,l.geom))) 
-from calsimetaw.dauco d join landuse l on (st_intersects(d.geom,l.geom))
+from calsimetaw.dauco d join landuse_2015 l on (st_intersects(d.geom,l.geom))
 group by 1,2,3;
 
 
-create or replace view level_1_ct as 
+create or replace view level_1_ct_wy2015 as 
 select * from crosstab(
-    'select level_1,dauco,sum(sum)::integer from calsimetaw.dau_landuse group by 1,2 order by 1,2',
-    'select distinct dauco from calsimetaw.dau_landuse order by 1'
+    'select level_1,dauco,sum(sum)::integer from calsimetaw.dau_landuse_wy2015 group by 1,2 order by 1,2',
+    'select distinct dauco from calsimetaw.dau_landuse_wy2015 order by 1'
 ) as ( 
     level_1 text,
     "DAUCo18501GA" integer,
@@ -42,10 +42,10 @@ select * from crosstab(
     "DAUCo18657GA" integer
 );
 
-create or replace view level_2_ct as 
+create or replace view level_2_ct_wy2015 as 
 select * from crosstab(
-    'select level_2,dauco,sum(sum)::integer from calsimetaw.dau_landuse group by 1,2 order by 1,2',
-    'select distinct dauco from calsimetaw.dau_landuse order by 1'
+    'select level_2,dauco,sum(sum)::integer from calsimetaw.dau_landuse_wy2015 group by 1,2 order by 1,2',
+    'select distinct dauco from calsimetaw.dau_landuse_wy2015 order by 1'
 ) as ( 
     level_2 text,
     "DAUCo18501GA" integer,
@@ -57,7 +57,7 @@ select * from crosstab(
 );
 
 -- Fixup the model_output for fallow?
-insert into calsimetaw.model_output
+insert into calsimetaw.model_output_wy2015
 (dauco,commodity,year,mon,day,doy,okc,ikc,kc)
 select
 dauco,
@@ -66,7 +66,7 @@ year,mon,day,doy,
 min(okc) as okc,
 0 as ikc,
 min(okc) as kc
-from calsimetaw.model_output
+from calsimetaw.model_output_wy2015
 group by dauco,year,mon,day,doy
 order by dauco,doy;
 

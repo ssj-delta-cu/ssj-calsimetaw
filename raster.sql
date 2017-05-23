@@ -4,7 +4,7 @@
 create temp table eto_poly as
 with p as (
  select b,(st_dumpAsPolygons(rast,b)).*
- from cimis.eto,generate_series(1,365) as b
+ from cimis.eto_wy2015,generate_series(1,365) as b
 )
 select b as dowy,
 val as eto,
@@ -25,7 +25,7 @@ join calsimetaw.cimis c on st_intersects(d.geom,c.boundary);
 create temp table dauco_ew_com_et as
 with m as (
  select (year||'-'||mon||'-'||day)::date,*
- from calsimetaw.model_output
+ from calsimetaw.model_output_wy2015
 ),
 n as (
  select m.*,
@@ -64,7 +64,7 @@ from dauco_ew_com_et
 group by dauco,east,north,commodity;
 
 -- Intersection of landuse data with calsimetaw data.
-create table calsimetaw.et as
+create table calsimetaw.et_wy2015 as
 select
 dauco,east,north,c.level_2,
 daily_et,daily_iet,daily_oet,
@@ -73,7 +73,7 @@ st_intersection(d.boundary,l.boundary) as boundary
 from dauco_ew_com_et_bytearray
 join dauco_ew d using (dauco,east,north)
 join calsimetaw.crosswalk c using (commodity)
-join landuse l on (c.level_2=l.level_2
+join landuse_2015 l on (c.level_2=l.level_2
 and st_intersects(d.boundary,l.boundary));
 
 -- Raster version.
@@ -89,12 +89,12 @@ select 2015 as year,
 st_union(st_asRaster(
 st_transform(boundary,(st_metadata(r.rast)).srid),r.rast,bt,daily_et,nv)
  ) as rast
-from calsimetaw.et,r,v
+from calsimetaw.et_wy2015,r,v
 union
 select 2015 as year,
 'iet'::text as type,
 st_union(st_asRaster(
 st_transform(boundary,(st_metadata(r.rast)).srid),r.rast,bt,daily_iet,nv)
 ) as rast
-from calsimetaw.et,r,v;
+from calsimetaw.et_wy2015,r,v;
 
