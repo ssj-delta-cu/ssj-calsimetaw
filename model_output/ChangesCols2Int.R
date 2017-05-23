@@ -12,4 +12,5 @@ data$Year <- as.integer(data$Year)
 data$Mon <- as.integer(data$Mon)
 data$Day <- as.integer(data$Day)
 data$DOY <- as.integer(data$DOY)
+data[is.na(data)] <- 0 # replace all NAs with zero
 write.csv(data, "wy2016/model_output.csv", row.names = F)

@@ -27,6 +27,13 @@ sum(st_area(st_intersection(d.geom,l.geom)))
 from calsimetaw.dauco d join landuse_2015 l on (st_intersects(d.geom,l.geom))
 group by 1,2,3;
 
+create materialized view calsimetaw.dau_landuse_wy2016 as 
+select 
+level_2,dauco,
+sum(st_area(st_intersection(d.geom,l.geom))) 
+from calsimetaw.dauco d join landuse_2016 l on (st_intersects(d.geom,l.geom))
+group by 1,2;
+
 
 create or replace view level_1_ct_wy2015 as 
 select * from crosstab(
@@ -56,12 +63,26 @@ select * from crosstab(
     "DAUCo18657GA" integer
 );
 
+create or replace view level_2_ct_wy2016 as 
+select * from crosstab(
+    'select level_2,dauco,sum(sum)::integer from calsimetaw.dau_landuse_wy2016 group by 1,2 order by 1,2',
+    'select distinct dauco from calsimetaw.dau_landuse_wy2016 order by 1'
+) as ( 
+    level_2 text,
+    "DAUCo18501GA" integer,
+    "DAUCo18507GA" integer,
+    "DAUCo18539GA" integer,
+    "DAUCo18634GA" integer,
+    "DAUCo18648GA" integer,
+    "DAUCo18657GA" integer
+);
+
 -- Fixup the model_output for fallow?
 insert into calsimetaw.model_output_wy2015
 (dauco,commodity,year,mon,day,doy,okc,ikc,kc)
 select
 dauco,
-'FALLOW' as commodity,
+'Fallow' as commodity,
 year,mon,day,doy,
 min(okc) as okc,
 0 as ikc,
@@ -69,6 +90,7 @@ min(okc) as kc
 from calsimetaw.model_output_wy2015
 group by dauco,year,mon,day,doy
 order by dauco,doy;
+
 
 create table calsimetaw.crosswalk as
 select * from
@@ -79,8 +101,8 @@ select * from
 ('CitrusSubtrop','Citrus'),
 ('Corn','Corn'),
 ('Cucurbits','Cucurbit'),
-('FALLOW','Fallow'),
-('FALLOW','Upland Herbaceous'),
+('Fallow','Fallow'),
+('Fallow','Upland Herbaceous'),
 ('Pasture','Wet herbaceous/sub irrigated pasture'),
 ('Olives','Olives'),
 ('OtherDeciduous','Other Deciduous'),
