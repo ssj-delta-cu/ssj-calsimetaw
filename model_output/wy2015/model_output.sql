@@ -1,4 +1,4 @@
-create table model_output (
+create table calsimetaw.model_output_wy2015 (
 dauco varchar(5),
 commodity text,
 year integer,
@@ -26,4 +26,4 @@ NA float,
 primary key (dauco,commodity,year,mon,day)
 );
 
-\COPY model_output from model_output.csv with csv header
+\COPY calsimetaw.model_output_wy2015 from model_output.csv with csv header
