@@ -5,13 +5,13 @@ SHELL:=/bin/bash
 db:=ssj
 schema:=calsimetaw
 service=ssj
-PG:=psql service=${service} -d ${db}
+PG:=psql -h localhost -U ssj -d ${db}
 OGR:=ogr2ogr -f "PostgreSQL" PG:"host='localhost' user='ssj' dbname='${db}' port='5432'" -overwrite -a_srs epsg:4269 -t_srs epsg:3310
 SSJFOLDER:=${HOME}/Documents/ssj-delta-cu
 
 .PHONY:import
 
-import: dau grid eto counties
+import: dau grid eto_wy2015 eto_wy2016 counties
 # This just rebuilds everytime
 dau: tar:=v2.1.0.tar.gz
 dau: url:=https://github.com/ucd-cws/dwr-dau/archive/v2.1.0.tar.gz
@@ -45,10 +45,15 @@ counties:
 	date > $@
 	rm ${tar}
 
-eto:rast:=${SSJFOLDER}/ssj-weather/cimis/2015.wy/ETo.tif
-eto:
-	raster2pgsql -d ${rast} cimis.eto | ${PG} -f -
+eto_wy2015:eto_wy2015:=${SSJFOLDER}/ssj-weather/cimis/2015.wy/ETo.tif
+eto_wy2015:
+	raster2pgsql -d ${eto_wy2015} cimis.eto_wy2015 | ${PG} -f -
 	date > $@
+	
+eto_wy2016:eto_wy2016:=${SSJFOLDER}/ssj-weather/cimis/2016.wy/ETo.tif
+eto_wy2016:
+	raster2pgsql -d ${eto_wy2016} cimis.eto_wy2016 | ${PG} -f -
+	date > $@	
 
 bbox: bbox:=${SSJFOLDER}/ssj-overview/ssj-delta-cu-bbox.geojson
 bbox:
