@@ -67,6 +67,14 @@ et_wy2015.tif:et_wy%.tif:
 iet_wy2015.tif:iet_wy%.tif:
 	gdal_translate -of GTiff -co "COMPRESS=DEFLATE" \
 	  "PG:host='localhost' user='ssj' dbname='ssj' schema='calsimetaw' table='et_raster' mode='1' where='type=\'iet\' and year=$*'" $@
+	  
+et_wy2016.tif:et_wy%.tif:
+	gdal_translate -of GTiff -co "COMPRESS=DEFLATE" \
+	  "PG:host='localhost' user='ssj' dbname='ssj' schema='calsimetaw' table='et_raster_wy2016' mode='1' where='type=\\'et\\' and year=$*'" $@
+
+iet_wy2016.tif:iet_wy%.tif:
+	gdal_translate -of GTiff -co "COMPRESS=DEFLATE" \
+	  "PG:host='localhost' user='ssj' dbname='ssj' schema='calsimetaw' table='et_raster_wy2016' mode='1' where='type=\'iet\' and year=$*'" $@
 
 # Getting DWR values
 #for i in `psql service=ssj -A -t --pset=footer -c 'with a as (select dwr_id,boundary,wkb_geometry,(st_area(st_intersection(g.boundary,b.wkb_geometry)))::int as area from calsimetaw.calsimetaw g join overview.bbox b on st_intersects(g.boundary,b.wkb_geometry)) select dwr_id from a where area > 0 order by dwr_id' `; do rsync ../weather/cimis_$i.csv . -v ; done

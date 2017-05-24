@@ -91,7 +91,6 @@ from calsimetaw.model_output_wy2015
 group by dauco,year,mon,day,doy
 order by dauco,doy;
 
-
 create table calsimetaw.crosswalk as
 select * from
 (VALUES
@@ -102,6 +101,7 @@ select * from
 ('Corn','Corn'),
 ('Cucurbits','Cucurbit'),
 ('Fallow','Fallow'),
+('Fallow', 'Summer Fallow'),
 ('Fallow','Upland Herbaceous'),
 ('Pasture','Wet herbaceous/sub irrigated pasture'),
 ('Olives','Olives'),
